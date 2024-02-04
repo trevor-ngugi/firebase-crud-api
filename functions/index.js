@@ -27,6 +27,7 @@ const express = require("express");
 const app = express();
 const db=admin.firestore();
 const cors = require("cors");
+const { QuerySnapshot } = require("firebase-admin/firestore");
 app.use(cors({origin:true}));
 
 // routes
@@ -64,6 +65,38 @@ app.get('/api/get-inventory/:id',(req,res)=>{
             const document=db.collection('products').doc(req.params.id);
             let product=await document.get();
             let response=product.data();
+            return res.status(200).send(response);
+        }
+        catch(error)
+        {
+            console.log(error);
+            return res.status(500).send(error);
+        }
+    })();
+})
+
+//read all  products 
+//get
+app.get('/api/get-inventory/',(req,res)=>{
+    (async () =>{
+        try
+        {
+            let query=db.collection('products');// querying the database
+            let response=[];
+            await query.get().then(QuerySnapshot=>{
+                let docs=QuerySnapshot.docs; // result of the query
+                for (let doc of docs)
+                {
+                    const selectedItem={
+                        id:doc.id,
+                        name:doc.data().name,
+                        description:doc.data().description,
+                        price:doc.data().price
+                    };
+                    response.push(selectedItem);
+                }
+                return response;
+            })
             return res.status(200).send(response);
         }
         catch(error)
