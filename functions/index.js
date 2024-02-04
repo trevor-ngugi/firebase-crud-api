@@ -55,8 +55,24 @@ app.post('/api/create-inventory',(req,res)=>{
     })();
 })
 
-//read
+//read a specific product on id
 //get
+app.get('/api/get-inventory/:id',(req,res)=>{
+    (async () =>{
+        try
+        {
+            const document=db.collection('products').doc(req.params.id);
+            let product=await document.get();
+            let response=product.data();
+            return res.status(200).send(response);
+        }
+        catch(error)
+        {
+            console.log(error);
+            return res.status(500).send(error);
+        }
+    })();
+})
 
 //update
 //put
