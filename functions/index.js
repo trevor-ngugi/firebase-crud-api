@@ -12,16 +12,48 @@ const logger = require("firebase-functions/logger");
 
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
+
+//to authenticate
+
+
+var serviceAccount = require("./permissions.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
+
+
 const express = require("express");
-const cors = require("cors");
 const app = express();
+const db=admin.firestore();
+const cors = require("cors");
+app.use(cors({origin:true}));
 
 // routes
 app.get('/hello-world',(req,res)=>{
     return res.status(200).send('hello world');
 })
 //create
-//put
+//post
+app.post('/api/create-inventory',(req,res)=>{
+    (async () =>{
+        try
+        {
+            await db.collection('products').doc('/'+req.body.id+'/')
+            .create({
+                name:req.body.name,
+                description:req.body.description,
+                price:req.body.price
+            })
+            return res.status(200).send();
+        }
+        catch(error)
+        {
+            console.log(error);
+            return res.status(500).send(error);
+        }
+    })();
+})
 
 //read
 //get
