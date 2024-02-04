@@ -31,9 +31,7 @@ const { QuerySnapshot } = require("firebase-admin/firestore");
 app.use(cors({origin:true}));
 
 // routes
-app.get('/hello-world',(req,res)=>{
-    return res.status(200).send('hello world');
-})
+
 //create
 //post
 app.post('/api/create-inventory',(req,res)=>{
