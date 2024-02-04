@@ -109,9 +109,43 @@ app.get('/api/get-inventory/',(req,res)=>{
 
 //update
 //put
+app.put('/api/update-inventory/:id',(req,res)=>{
+    (async () =>{
+        try
+        {
+            const document=db.collection("products").doc(req.params.id);
+            await document.update({
+                name:req.body.name,
+                description:req.body.description,
+                price:req.body.price
+            });
+            return res.status(200).send();
+        }
+        catch(error)
+        {
+            console.log(error);
+            return res.status(500).send(error);
+        }
+    })();
+})
 
 // delete
 //delete
+app.delete('/api/delete-inventory/:id',(req,res)=>{
+    (async () =>{
+        try
+        {
+            const document=db.collection("products").doc(req.params.id);
+            await document.delete();
+            return res.status(200).send();
+        }
+        catch(error)
+        {
+            console.log(error);
+            return res.status(500).send(error);
+        }
+    })();
+})
 
 exports.app=functions.https.onRequest(app);
 
